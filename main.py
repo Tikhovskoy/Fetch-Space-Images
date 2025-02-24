@@ -7,6 +7,7 @@ import argparse
 from dotenv import load_dotenv
 from datetime import datetime
 
+# Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_file_extension(url):
@@ -47,10 +48,12 @@ def fetch_images(api_type, nasa_api_key, count=10):
     nasa_apod_url = "https://api.nasa.gov/planetary/apod"
     epic_api_url = "https://api.nasa.gov/EPIC/api/natural/images"
     epic_image_url = "https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_name}.png"
+    spacex_url = "https://api.spacexdata.com/v5/launches/past"
     
     api_urls = {
         "nasa_apod": nasa_apod_url,
-        "epic": f"{epic_api_url}?api_key={nasa_api_key}"
+        "epic": f"{epic_api_url}?api_key={nasa_api_key}",
+        "spacex": spacex_url
     }
     
     if api_type not in api_urls:
@@ -66,7 +69,8 @@ def fetch_images(api_type, nasa_api_key, count=10):
     
     parsers = {
         "nasa_apod": lambda d: [item["url"] for item in d if item.get("media_type") == "image"],
-        "epic": lambda d: [epic_image_url.format(year=img["date"][:4], month=img["date"][5:7], day=img["date"][8:10], image_name=img["image"]) + f"?api_key={nasa_api_key}" for img in d[:count]]
+        "epic": lambda d: [epic_image_url.format(year=img["date"][:4], month=img["date"][5:7], day=img["date"][8:10], image_name=img["image"]) + f"?api_key={nasa_api_key}" for img in d[:count]],
+        "spacex": lambda d: next((launch["links"]["flickr"]["original"] for launch in reversed(d) if launch["links"].get("flickr", {}).get("original")), [])
     }
     
     return parsers[api_type](data)
@@ -78,8 +82,8 @@ def main():
     if not nasa_api_key:
         raise ValueError("Ошибка: отсутствует NASA_API_KEY. Укажите его в .env")
     
-    parser = argparse.ArgumentParser(description="Скачивание изображений из NASA и EPIC API.")
-    parser.add_argument("--source", choices=["nasa_apod", "epic", "all"], default="all", help="Выбор источника изображений")
+    parser = argparse.ArgumentParser(description="Скачивание изображений из NASA, EPIC и SpaceX API.")
+    parser.add_argument("--source", choices=["nasa_apod", "epic", "spacex", "all"], default="all", help="Выбор источника изображений")
     parser.add_argument("--count", type=int, default=10, help="Количество изображений для загрузки")
     args = parser.parse_args()
     
@@ -89,9 +93,11 @@ def main():
     sources = {
         "nasa_apod": [("nasa_apod", image_directory, "nasa", args.count)],
         "epic": [("epic", image_directory, "epic", args.count)],
+        "spacex": [("spacex", image_directory, "spacex", args.count)],
         "all": [
             ("nasa_apod", image_directory, "nasa", args.count),
-            ("epic", image_directory, "epic", args.count)
+            ("epic", image_directory, "epic", args.count),
+            ("spacex", image_directory, "spacex", args.count)
         ]
     }
     
