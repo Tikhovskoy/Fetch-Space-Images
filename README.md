@@ -51,27 +51,41 @@ python telegram_publisher.py --directory images --delay 14400
 ```
 (14400 секунд = 4 часа, можно изменить в `.env` через `PUBLISH_DELAY_HOURS`).
 
+#### 3.3. Запуск отдельных скриптов
+- Скачивание изображений NASA APOD:
+  ```sh
+  python fetch_nasa_apod.py --count 5
+  ```
+- Скачивание изображений NASA EPIC:
+  ```sh
+  python fetch_nasa_epic.py --count 5
+  ```
+- Скачивание изображений SpaceX:
+  ```sh
+  python fetch_spacex_images.py
+  ```
+
 ## Описание файлов
 ### `fetch_images.py`
 - Запрашивает изображения из NASA APOD, NASA EPIC и SpaceX.
 - Обрабатывает API-запросы и логирует ошибки.
 
 ### `image_downloader.py`
-- Скачивает и сохраняет изображения.
+- Вспомогательный модуль для скачивания и сохранения изображений.
 - Поддерживает автоматическое удаление старых файлов.
 - Функция `download_all_images()` скачивает сразу все изображения.
 
 ### `fetch_nasa_apod.py`
 - Загружает изображения NASA APOD.
-- Вызывает `fetch_nasa_apod_images()` и сохраняет файлы.
+- Вызывает `download_all_images()` и сохраняет файлы.
 
 ### `fetch_nasa_epic.py`
 - Загружает изображения NASA EPIC.
-- Вызывает `fetch_epic_images()` и сохраняет файлы.
+- Вызывает `download_all_images()` и сохраняет файлы.
 
 ### `fetch_spacex_images.py`
 - Загружает фотографии последнего запуска SpaceX.
-- Вызывает `fetch_spacex_images()` и сохраняет файлы.
+- Вызывает `download_all_images()` и сохраняет файлы.
 
 ### `telegram_publisher.py`
 - Публикует изображения в Telegram-канал.
