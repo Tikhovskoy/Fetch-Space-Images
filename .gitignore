@@ -1,2 +1,5 @@
 .env
 images/
+__pycache__/
+.git/
+venv/
