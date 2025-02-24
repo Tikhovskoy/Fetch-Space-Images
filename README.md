@@ -7,7 +7,7 @@
 
 ### 1. Клонирование репозитория
 ```bash
-git clone https://github.com/yourusername/fetch-space-images.git
+git clone https://github.com/Tikhovskoy/Fetch-Space-Images.git
 cd fetch-space-images
 ```
 
