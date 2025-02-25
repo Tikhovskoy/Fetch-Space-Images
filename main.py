@@ -1,18 +1,22 @@
 import os
 import argparse
 import subprocess
+import sys
 import logging
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def run_script(script_name, args=[]):
     try:
         logging.info(f"Запускаем: {script_name} {' '.join(args)}")
-        subprocess.run(["python", script_name] + args, check=True)
+        subprocess.run([sys.executable, script_name] + args, check=True)
     except subprocess.CalledProcessError as e:
         logging.error(f"Ошибка выполнения {script_name}: {e}")
 
 def main():
+    load_dotenv()
+    
     parser = argparse.ArgumentParser(description="Запуск скачивания изображений.")
     parser.add_argument("--source", choices=["nasa_apod", "epic", "spacex", "all"], default="all", help="Выбор источника")
     parser.add_argument("--count", type=str, default="10", help="Количество изображений")

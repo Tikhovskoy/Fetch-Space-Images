@@ -10,16 +10,13 @@ def get_file_extension(url):
     return os.path.splitext(os.path.basename(urllib.parse.urlsplit(url).path))[1] or ".jpg"
 
 def save_image(index, url, directory, prefix):
-    try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        image_path = os.path.join(directory, f"{prefix}{index}{get_file_extension(url)}")
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+    image_path = os.path.join(directory, f"{prefix}{index}{get_file_extension(url)}")
 
-        with open(image_path, "wb") as file:
-            file.write(response.content)
-        logging.info(f"Сохранено: {image_path}")
-    except requests.RequestException as e:
-        logging.error(f"Ошибка при скачивании {url}: {e}")
+    with open(image_path, "wb") as file:
+        file.write(response.content)
+    logging.info(f"Сохранено: {image_path}")
 
 def clear_directory(directory):
     if os.path.exists(directory):
@@ -31,7 +28,7 @@ def clear_directory(directory):
 
 def download_all_images(directory="images", count=5):
     os.makedirs(directory, exist_ok=True)
-    
+
     sources = {
         "nasa_apod": fetch_nasa_apod_images(count),
         "epic": fetch_epic_images(count),
@@ -43,4 +40,7 @@ def download_all_images(directory="images", count=5):
             logging.warning(f"Нет изображений для {prefix}. Пропускаем.")
             continue
         for index, url in enumerate(images, start=1):
-            save_image(index, url, directory, prefix)
+            try:
+                save_image(index, url, directory, prefix)
+            except requests.RequestException as e:
+                logging.error(f"Ошибка при скачивании {url}: {e}")
