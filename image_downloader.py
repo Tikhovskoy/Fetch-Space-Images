@@ -7,9 +7,30 @@ from fetch_images import fetch_nasa_apod_images, fetch_epic_images, fetch_spacex
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def get_file_extension(url):
+    """
+    Определяет расширение файла из URL.
+
+    Аргументы:
+        url (str): URL изображения.
+
+    Возвращает:
+        str: Расширение файла (например, .jpg, .png).
+    """
     return os.path.splitext(os.path.basename(urllib.parse.urlsplit(url).path))[1] or ".jpg"
 
 def save_image(index, url, directory, prefix):
+    """
+    Скачивает изображение по указанному URL и сохраняет его в указанную папку.
+
+    Аргументы:
+        index (int): Номер изображения.
+        url (str): URL изображения.
+        directory (str): Путь к папке для сохранения изображения.
+        prefix (str): Префикс имени файла.
+
+    Исключения:
+        requests.RequestException: Ошибка при скачивании изображения.
+    """
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     image_path = os.path.join(directory, f"{prefix}{index}{get_file_extension(url)}")
@@ -19,6 +40,12 @@ def save_image(index, url, directory, prefix):
     logging.info(f"Сохранено: {image_path}")
 
 def clear_directory(directory):
+    """
+    Очищает указанную папку, удаляя все файлы.
+
+    Аргументы:
+        directory (str): Путь к папке, которую нужно очистить.
+    """
     if os.path.exists(directory):
         for file in os.listdir(directory):
             file_path = os.path.join(directory, file)
@@ -27,6 +54,16 @@ def clear_directory(directory):
     os.makedirs(directory, exist_ok=True)
 
 def download_all_images(directory="images", count=5):
+    """
+    Скачивает изображения из всех доступных источников и сохраняет их в указанную папку.
+
+    Аргументы:
+        directory (str): Путь к папке для сохранения изображений.
+        count (int): Количество изображений для загрузки.
+
+    Исключения:
+        requests.RequestException: Ошибка при скачивании изображений.
+    """
     os.makedirs(directory, exist_ok=True)
 
     sources = {

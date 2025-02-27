@@ -1,20 +1,25 @@
 import requests
-import os
 import logging
 from datetime import datetime
 from urllib.parse import urlencode
-
-NASA_API_KEY = os.getenv("NASA_API_KEY")
-NASA_APOD_URL = "https://api.nasa.gov/planetary/apod"
-EPIC_API_URL = "https://api.nasa.gov/EPIC/api/natural/images"
-EPIC_IMAGE_URL = "https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_name}.png"
-SPACEX_URL = "https://api.spacexdata.com/v5/launches/past"
+import os
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-def fetch_nasa_apod_images(count=10):
-    params = {"api_key": NASA_API_KEY, "count": count}
-    response = requests.get(NASA_APOD_URL, params=params, timeout=10)
+def fetch_nasa_apod_images(api_key, url, count=10):
+    """
+    Получает список изображений из NASA APOD.
+
+    Аргументы:
+        api_key (str): API-ключ NASA.
+        url (str): URL для запроса APOD.
+        count (int): Количество изображений для загрузки.
+
+    Возвращает:
+        list: Список URL изображений.
+    """
+    params = {"api_key": api_key, "count": count}
+    response = requests.get(url, params=params, timeout=10)
     response.raise_for_status()
     data = response.json()
     images = [item["url"] for item in data if item.get("media_type") == "image"]
@@ -22,9 +27,20 @@ def fetch_nasa_apod_images(count=10):
         logging.warning("NASA APOD не вернуло изображений.")
     return images
 
-def fetch_epic_images(count=10):
-    params = {"api_key": NASA_API_KEY}
-    response = requests.get(EPIC_API_URL, params=params, timeout=10)
+def fetch_epic_images(api_key, url, count=10):
+    """
+    Получает список изображений NASA EPIC.
+
+    Аргументы:
+        api_key (str): API-ключ NASA.
+        url (str): URL для запроса EPIC.
+        count (int): Количество изображений для загрузки.
+
+    Возвращает:
+        list: Список URL изображений.
+    """
+    params = {"api_key": api_key}
+    response = requests.get(url, params=params, timeout=10)
     response.raise_for_status()
     images_data = response.json()[:count]
     if not images_data:
@@ -38,14 +54,23 @@ def fetch_epic_images(count=10):
         day = date_obj.strftime("%d")
         image_name = img["image"]
 
-        epic_url = EPIC_IMAGE_URL.format(year=year, month=month, day=day, image_name=image_name)
-        epic_url += "?" + urlencode(params)
+        epic_url = f"{url}/{year}/{month}/{day}/png/{image_name}.png"
         epic_urls.append(epic_url)
 
     return epic_urls
 
-def fetch_spacex_images():
-    response = requests.get(SPACEX_URL, timeout=10)
+def fetch_spacex_images(url, count=10):
+    """
+    Получает список изображений последнего запуска SpaceX.
+
+    Аргументы:
+        url (str): URL для запроса SpaceX.
+        count (int): Количество изображений для загрузки.
+
+    Возвращает:
+        list: Список URL изображений.
+    """
+    response = requests.get(url, timeout=10)
     response.raise_for_status()
     launches = response.json()
 
@@ -58,7 +83,32 @@ def fetch_spacex_images():
         if original_images:
             launch_images = original_images
             break
+
     if not launch_images:
         logging.warning("SpaceX не вернуло изображений.")
 
     return launch_images
+
+def main():
+    """
+    Основная функция для тестирования получения изображений.
+    """
+    api_key = os.getenv("NASA_API_KEY")
+    apod_url = "https://api.nasa.gov/planetary/apod"
+    epic_url = "https://api.nasa.gov/EPIC/api/natural/images"
+    spacex_url = "https://api.spacexdata.com/v5/launches/past"
+
+    if not api_key:
+        logging.error("API-ключ NASA не найден в переменных окружения.")
+        return
+
+    images_apod = fetch_nasa_apod_images(api_key, apod_url, count=5)
+    images_epic = fetch_epic_images(api_key, epic_url, count=5)
+    images_spacex = fetch_spacex_images(spacex_url, count=5)
+    
+    print("NASA APOD Images:", images_apod)
+    print("NASA EPIC Images:", images_epic)
+    print("SpaceX Images:", images_spacex)
+
+if __name__ == "__main__":
+    main()
