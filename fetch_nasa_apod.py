@@ -3,7 +3,7 @@ import argparse
 from image_downloader import download_all_images
 
 def main():
-        """
+    """
     Основная функция для загрузки изображений NASA APOD.
 
     Аргументы командной строки:

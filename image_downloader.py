@@ -52,11 +52,17 @@ def download_all_images(directory="images", count=5):
     """
     os.makedirs(directory, exist_ok=True)
 
+    api_key = os.getenv("NASA_API_KEY")
+    apod_url = "https://api.nasa.gov/planetary/apod"
+    epic_url = "https://api.nasa.gov/EPIC/api/natural/images"
+    spacex_url = "https://api.spacexdata.com/v5/launches/past"
+
     sources = {
-        "nasa_apod": fetch_nasa_apod_images(count),
-        "epic": fetch_epic_images(count),
-        "spacex": fetch_spacex_images()
+        "nasa_apod": fetch_nasa_apod_images(api_key, apod_url, count),
+        "epic": fetch_epic_images(api_key, epic_url, count),
+        "spacex": fetch_spacex_images(spacex_url, count)
     }
+
 
     for prefix, images in sources.items():
         if not images:
