@@ -39,20 +39,6 @@ def save_image(index, url, directory, prefix):
         file.write(response.content)
     logging.info(f"Сохранено: {image_path}")
 
-def clear_directory(directory):
-    """
-    Очищает указанную папку, удаляя все файлы.
-
-    Аргументы:
-        directory (str): Путь к папке, которую нужно очистить.
-    """
-    if os.path.exists(directory):
-        for file in os.listdir(directory):
-            file_path = os.path.join(directory, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-    os.makedirs(directory, exist_ok=True)
-
 def download_all_images(directory="images", count=5):
     """
     Скачивает изображения из всех доступных источников и сохраняет их в указанную папку.
