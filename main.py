@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-def run_script(script_name, args=[]):
+def run_script(script_name, args=None):
     """
     Запускает внешний скрипт с указанными аргументами.
 
@@ -18,6 +18,8 @@ def run_script(script_name, args=[]):
     Исключения:
         subprocess.CalledProcessError: Ошибка при выполнении внешнего скрипта.
     """
+    if args is None:
+        args = []    
     try:
         logging.info(f"Запускаем: {script_name} {' '.join(args)}")
         subprocess.run([sys.executable, script_name] + args, check=True)
@@ -42,8 +44,8 @@ def main():
     args = parser.parse_args()
 
     scripts = {
-        "nasa_apod": ["fetch_nasa_apod.py", ["--count", args.count]],
-        "epic": ["fetch_nasa_epic.py", ["--count", args.count]],
+        "nasa_apod": ["fetch_nasa_apod.py", ["--count", str(args.count)]],
+        "epic": ["fetch_nasa_epic.py", ["--count", str(args.count)]],
         "spacex": ["fetch_spacex_images.py", []]
     }
 
