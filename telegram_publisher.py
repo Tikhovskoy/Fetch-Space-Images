@@ -64,7 +64,7 @@ def main():
     bot = telegram.Bot(token=bot_token)
 
     parser = argparse.ArgumentParser(description="Публикация изображений в Telegram-канал.")
-    parser.add_argument("--directory", type=str, default="images", help="Папка с изображениями")
+    parser.add_argument("--directory", type=str, default=os.getenv("IMAGES_DIR", "images"), help="Папка с изображениями")
     parser.add_argument("--delay", type=int, default=publish_delay, help="Задержка между публикациями в секундах")
     args = parser.parse_args()
 
