@@ -14,6 +14,26 @@
 - **Сжатие изображений**, если их размер превышает 20 MB.
 - **Гибкие настройки через `.env` файл**.
 
+### **Как настроить переменные окружения**
+
+**Способ 1: через файл **`` (рекомендуется)\
+Создайте файл `.env` в корне проекта и добавьте туда:
+
+```
+TELEGRAM_BOT_TOKEN="your-bot-token"
+TELEGRAM_CHANNEL_ID="your_channel_id"
+PUBLISH_DELAY_HOURS=4
+IMAGES_DIR="images"
+```
+
+**Способ 2: через экспорт в терминале**
+
+```sh
+export TELEGRAM_BOT_TOKEN="your-bot-token"
+export TELEGRAM_CHANNEL_ID="your_channel_id"
+export PUBLISH_DELAY_HOURS=4
+export IMAGES_DIR="images"
+
 ## Установка и запуск
 
 ### 1. Установка зависимостей
