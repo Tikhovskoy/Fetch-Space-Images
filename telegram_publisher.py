@@ -10,9 +10,28 @@ from image_downloader import download_all_images
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
+def load_and_shuffle_images(directory):
+    """
+    Загружает изображения из указанной папки и перемешивает их.
+
+    Аргументы:
+        directory (str): Путь к папке с изображениями.
+
+    Возвращает:
+        list: Перемешанный список путей к изображениям.
+    """
+    images = [os.path.join(directory, f) for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+
+    if not images:
+        logging.error("Ошибка: В папке нет изображений. Завершаем работу.")
+        raise FileNotFoundError("В папке отсутствуют изображения для публикации. Добавьте фотографии и запустите программу снова.")
+
+    random.shuffle(images)
+    return images
+
 def publish_images(directory, delay_seconds, bot, channel_id):
     """
-    Публикует изображения в Telegram-канал с указанной задержкой.
+    Циклично публикует изображения в Telegram-канал с задержкой.
 
     Аргументы:
         directory (str): Папка с изображениями.
@@ -20,33 +39,20 @@ def publish_images(directory, delay_seconds, bot, channel_id):
         bot (telegram.Bot): Объект бота Telegram.
         channel_id (str): ID Telegram-канала.
     """
-    error_count = 0
-    max_errors = 5
-
     while True:
-        images = [os.path.join(directory, f) for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-
-        if len(images) == 0:
-            logging.error("Ошибка: В папке нет изображений. Завершаем работу.")
-            raise FileNotFoundError("В папке отсутствуют изображения для публикации. Добавьте фотографии и запустите программу снова.")
-
-        random.shuffle(images)
+        images = load_and_shuffle_images(directory)
 
         for image in images:
             try:
                 with open(image, "rb") as photo:
                     bot.send_photo(chat_id=channel_id, photo=photo)
                     logging.info(f"Опубликовано: {image}")
-                    error_count = 0
-
                 time.sleep(delay_seconds)
             except (telegram.error.TelegramError, OSError, IOError) as e:
-                error_count += 1
                 logging.error(f"Ошибка при публикации {image}: {e}")
 
-                if error_count >= max_errors:
-                    logging.critical("Достигнуто максимальное количество ошибок. Завершаем работу.")
-                    sys.exit(1)
+        logging.info("Все изображения опубликованы. Начинаем заново.")
+        time.sleep(delay_seconds)
 
 def main():
     """
