@@ -27,9 +27,8 @@ def publish_images(directory, delay_seconds, bot, channel_id):
         images = [os.path.join(directory, f) for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
 
         if len(images) == 0:
-            logging.info(f"Фотографии закончились! Загружаем новые...")
-            download_all_images(directory, 5)
-            images = [os.path.join(directory, f) for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+            logging.error("Ошибка: В папке нет изображений. Завершаем работу.")
+            raise FileNotFoundError("В папке отсутствуют изображения для публикации. Добавьте фотографии и запустите программу снова.")
 
         random.shuffle(images)
 
