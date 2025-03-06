@@ -39,6 +39,7 @@ def publish_images(directory, delay_seconds, bot, channel_id):
         bot (telegram.Bot): Объект бота Telegram.
         channel_id (str): ID Telegram-канала.
     """
+    failure_count = 0
     while True:
         images = load_and_shuffle_images(directory)
 
@@ -48,8 +49,13 @@ def publish_images(directory, delay_seconds, bot, channel_id):
                     bot.send_photo(chat_id=channel_id, photo=photo)
                     logging.info(f"Опубликовано: {image}")
                 time.sleep(delay_seconds)
+                failure_count = 0
             except (telegram.error.TelegramError, OSError, IOError) as e:
                 logging.error(f"Ошибка при публикации {image}: {e}")
+                failure_count += 1
+                sleep_time = min(2 ** failure_count, 3600)
+                logging.info(f"Пауза на {sleep_time} секунд из-за ошибки подключения.")
+                time.sleep(sleep_time)
 
         logging.info("Все изображения опубликованы. Начинаем заново.")
         time.sleep(delay_seconds)
