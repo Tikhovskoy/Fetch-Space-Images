@@ -101,18 +101,9 @@ venv\Scripts\activate  # Для Windows
 pip install -r requirements.txt
 ```
 
-### 2. Создание `.env` файла
-Создайте файл `.env` в корневой директории и добавьте в него:
-```
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_CHANNEL_ID=your_channel_id
-PUBLISH_DELAY_HOURS=4
-```
-Эта переменная `PUBLISH_DELAY_HOURS` задает задержку между публикациями в часах (по умолчанию 4 часа).
+### 2. Запуск скриптов
 
-### 3. Запуск скриптов
-
-#### 3.1. Скачивание изображений вручную
+#### 2.1. Скачивание изображений вручную
 ```sh
 python main.py --source all --count 5
 ```
@@ -120,13 +111,13 @@ python main.py --source all --count 5
 - `--source`: источник изображений (`nasa_apod`, `epic`, `spacex`, `all`).
 - `--count`: количество изображений для загрузки (по умолчанию 10).
 
-#### 3.2. Автоматическая публикация в Telegram
+#### 2.2. Автоматическая публикация в Telegram
 ```sh
 python telegram_publisher.py --directory images --delay 14400
 ```
 (14400 секунд = 4 часа, можно изменить в `.env` через `PUBLISH_DELAY_HOURS`).
 
-#### 3.3. Запуск отдельных скриптов
+#### 2.3. Запуск отдельных скриптов
 - Скачивание изображений NASA APOD:
   ```sh
   python fetch_nasa_apod.py --count 5
