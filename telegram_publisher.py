@@ -57,8 +57,7 @@ def publish_images(directory, delay_seconds, bot, channel_id):
                 logging.info(f"Пауза на {sleep_time} секунд из-за ошибки подключения.")
                 time.sleep(sleep_time)
 
-        logging.info("Все изображения опубликованы. Начинаем заново.")
-        time.sleep(delay_seconds)
+        logging.info("Все изображения опубликованы. Начинаем заново.") 
 
 def main():
     """
