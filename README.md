@@ -74,7 +74,8 @@ SPACEX_URL=https://api.spacexdata.com/v5/launches/past
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 TELEGRAM_CHANNEL_ID=your_channel_id
 PUBLISH_DELAY_HOURS=4
-IMAGES_DIR=image```
+IMAGES_DIR=image
+```
 
 **Способ 2: через экспорт в терминале**
 
