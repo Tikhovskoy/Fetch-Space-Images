@@ -16,12 +16,49 @@
 
 ## Настройка переменных окружения
 
-Перед запуском программы настройте переменные окружения:
+Перед запуском программы необходимо задать следующие переменные окружения. Это позволит пользователю сразу понять, какие настройки требуются и как они влияют на работу программы.
 
-- **`TELEGRAM_BOT_TOKEN`** – Токен Telegram-бота для публикации. Обязательная переменная.
-- **`TELEGRAM_CHANNEL_ID`** – ID Telegram-канала, куда отправлять фото. Обязательная переменная.
-- **`PUBLISH_DELAY_HOURS`** – Задержка между публикациями в часах. Значение по умолчанию: `4`.
-- **`IMAGES_DIR`** – Папка с изображениями для публикации. Значение по умолчанию: `images`.
+## Переменные окружения
+
+- **`NASA_API_KEY`**  
+  **Описание:** API-ключ для доступа к данным NASA, используемый при запросах к NASA APOD и NASA EPIC.  
+  **Пример значения:** `DEMO_KEY` или ваш персональный ключ.  
+  **Влияние:** Без этого ключа запросы к API не будут работать.
+
+- **`APOD_URL`**  
+  **Описание:** URL для запроса изображений NASA APOD.  
+  **Значение по умолчанию:** `https://api.nasa.gov/planetary/apod`  
+  **Влияние:** Определяет конечную точку API для APOD.
+
+- **`EPIC_URL`**  
+  **Описание:** URL для запроса изображений NASA EPIC.  
+  **Значение по умолчанию:** `https://api.nasa.gov/EPIC/api/natural/images`  
+  **Влияние:** Определяет конечную точку API для EPIC.
+
+- **`SPACEX_URL`**  
+  **Описание:** URL для запроса изображений SpaceX.  
+  **Значение по умолчанию:** `https://api.spacexdata.com/v5/launches/past`  
+  **Влияние:** Используется для получения изображений последнего запуска SpaceX.
+
+- **`TELEGRAM_BOT_TOKEN`**  
+  **Описание:** Токен Telegram-бота для публикации изображений.  
+  **Пример значения:** `123456789:ABCdefGHIjklMNOpqrSTUvwxYZ`  
+  **Влияние:** Без корректного токена публикация в Telegram невозможна.
+
+- **`TELEGRAM_CHANNEL_ID`**  
+  **Описание:** Идентификатор Telegram-канала, куда будут отправляться изображения.  
+  **Пример значения:** `@your_channel_name` или числовой ID  
+  **Влияние:** Определяет канал для публикации фото.
+
+- **`PUBLISH_DELAY_HOURS`**  
+  **Описание:** Задержка между публикациями в Telegram (в часах).  
+  **Значение по умолчанию:** `4`  
+  **Влияние:** Определяет интервал между публикациями, что помогает избежать перегрузки.
+
+- **`IMAGES_DIR`**  
+  **Описание:** Папка, в которую будут сохраняться скачанные изображения.  
+  **Значение по умолчанию:** `images`  
+  **Влияние:** Указывает директорию для хранения изображений.
 
 ### **Как настроить переменные окружения**
 
@@ -29,17 +66,24 @@
 
 Создайте файл `.env` в корне проекта и добавьте туда:
 
-```
-TELEGRAM_BOT_TOKEN="your-bot-token"
-TELEGRAM_CHANNEL_ID="your_channel_id"
+```dotenv
+NASA_API_KEY=your_nasa_api_key
+APOD_URL=https://api.nasa.gov/planetary/apod
+EPIC_URL=https://api.nasa.gov/EPIC/api/natural/images
+SPACEX_URL=https://api.spacexdata.com/v5/launches/past
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHANNEL_ID=your_channel_id
 PUBLISH_DELAY_HOURS=4
-IMAGES_DIR="images"
-```
+IMAGES_DIR=image```
 
 **Способ 2: через экспорт в терминале**
 
 ```sh
-export TELEGRAM_BOT_TOKEN="your-bot-token"
+export NASA_API_KEY="your_nasa_api_key"
+export APOD_URL="https://api.nasa.gov/planetary/apod"
+export EPIC_URL="https://api.nasa.gov/EPIC/api/natural/images"
+export SPACEX_URL="https://api.spacexdata.com/v5/launches/past"
+export TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
 export TELEGRAM_CHANNEL_ID="your_channel_id"
 export PUBLISH_DELAY_HOURS=4
 export IMAGES_DIR="images"
