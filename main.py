@@ -1,9 +1,9 @@
-import os
 import argparse
 import subprocess
 import sys
 import logging
 from dotenv import load_dotenv
+from config import get_config
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -37,7 +37,8 @@ def main():
     В зависимости от переданного параметра `--source`, запускает соответствующий скрипт.
     """
     load_dotenv()
-    
+    config = get_config()
+
     parser = argparse.ArgumentParser(description="Запуск скачивания изображений.")
     parser.add_argument("--source", choices=["nasa_apod", "epic", "spacex", "all"], default="all", help="Выбор источника")
     parser.add_argument("--count", type=str, default="10", help="Количество изображений")
@@ -46,7 +47,7 @@ def main():
     scripts = {
         "nasa_apod": ["fetch_nasa_apod.py", ["--count", str(args.count)]],
         "epic": ["fetch_nasa_epic.py", ["--count", str(args.count)]],
-        "spacex": ["fetch_spacex_images.py", []]
+        "spacex": ["fetch_spacex_images.py", ["--count", str(args.count)]]
     }
 
     if args.source == "all":
