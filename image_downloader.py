@@ -54,19 +54,14 @@ def download_all_images(directory="images", count=5, api_key=None, apod_url=None
 
     os.makedirs(directory, exist_ok=True)
 
-    if apod_url is None:
-        apod_url = "https://api.nasa.gov/planetary/apod"
-    if epic_url is None:
-        epic_url = "https://api.nasa.gov/EPIC/api/natural/images"
-    if spacex_url is None:
-        spacex_url = "https://api.spacexdata.com/v5/launches/past"
-
-    sources = {
-        "nasa_apod": fetch_nasa_apod_images(api_key, apod_url, count),
-        "epic": fetch_epic_images(api_key, epic_url, count),
-        "spacex": fetch_spacex_images(spacex_url, count)
-    }
-
+    sources = {}
+    if apod_url:
+        sources["nasa_apod"] = fetch_nasa_apod_images(api_key, apod_url, count)
+    if epic_url:
+        sources["epic"] = fetch_epic_images(api_key, epic_url, count)
+    if spacex_url:
+        sources["spacex"] = fetch_spacex_images(spacex_url, count)
+        
     for prefix, images in sources.items():
         if not images:
             logging.warning(f"Нет изображений для {prefix}. Пропускаем.")
