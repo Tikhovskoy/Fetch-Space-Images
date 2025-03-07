@@ -18,7 +18,7 @@ def get_file_extension(url):
     """
     return os.path.splitext(os.path.basename(urllib.parse.urlsplit(url).path))[1] or ".jpg"
 
-def save_image(index, url, directory, prefix):
+def save_image(index, url, directory, prefix):    
     """
     Скачивает изображение по указанному URL и сохраняет его в указанную папку.
 
@@ -38,7 +38,7 @@ def save_image(index, url, directory, prefix):
         file.write(response.content)
     logging.info(f"Сохранено: {image_path}")
 
-def download_all_images(directory="images", count=5, api_key=None, apod_url=None, epic_url=None, spacex_url=None):
+def download_all_images(directory="images", count=5, api_key=None, source="all"):
     """
     Скачивает изображения из всех доступных источников и сохраняет их в указанную папку.
 
@@ -51,16 +51,16 @@ def download_all_images(directory="images", count=5, api_key=None, apod_url=None
     """
     if api_key is None:
         raise ValueError("API key must be provided")
-
+    
     os.makedirs(directory, exist_ok=True)
 
     sources = {}
-    if apod_url:
-        sources["nasa_apod"] = fetch_nasa_apod_images(api_key, apod_url, count)
-    if epic_url:
-        sources["epic"] = fetch_epic_images(api_key, epic_url, count)
-    if spacex_url:
-        sources["spacex"] = fetch_spacex_images(spacex_url, count)
+    if source == "all" or source == "nasa_apod":
+        sources["nasa_apod"] = fetch_nasa_apod_images(api_key, count)
+    if source == "all" or source == "epic":
+        sources["epic"] = fetch_epic_images(api_key, count)
+    if source == "all" or source == "spacex":
+        sources["spacex"] = fetch_spacex_images(count)
         
     for prefix, images in sources.items():
         if not images:

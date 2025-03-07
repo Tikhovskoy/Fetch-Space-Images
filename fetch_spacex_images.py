@@ -18,7 +18,7 @@ def main():
         directory=args.directory,
         count=args.count,
         api_key=config["NASA_API_KEY"],
-        spacex_url=config["SPACEX_URL"]
+        source="spacex"
     )
 
 if __name__ == "__main__":

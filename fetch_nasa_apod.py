@@ -22,7 +22,7 @@ def main():
         directory=args.directory,
         count=args.count,
         api_key=config["NASA_API_KEY"],
-        apod_url=config["APOD_URL"]
+        source="nasa_apod"
     )
 
 if __name__ == "__main__":

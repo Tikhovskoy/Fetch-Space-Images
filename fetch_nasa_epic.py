@@ -22,7 +22,7 @@ def main():
         directory=args.directory,
         count=args.count,
         api_key=config["NASA_API_KEY"],
-        epic_url=config["EPIC_URL"]
+        source="epic"
     )
 
 if __name__ == "__main__":
