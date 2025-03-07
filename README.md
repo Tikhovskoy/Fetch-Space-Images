@@ -105,12 +105,12 @@ pip install -r requirements.txt
 ### 2. Запуск скриптов
 
 #### 2.1. Скачивание изображений вручную
+Запустите нужный скрипт для загрузки изображений:
 ```sh
-python main.py --source all --count 5
+python fetch_nasa_apod.py # Загрузка APOD
+python fetch_nasa_epic.py # Загрузка EPIC
+python fetch_spacex_images.py # Загрузка SpaceX
 ```
-Параметры:
-- `--source`: источник изображений (`nasa_apod`, `epic`, `spacex`, `all`).
-- `--count`: количество изображений для загрузки (по умолчанию 10).
 
 #### 2.2. Автоматическая публикация в Telegram
 ```sh
@@ -118,19 +118,13 @@ python telegram_publisher.py --directory images --delay 14400
 ```
 (14400 секунд = 4 часа, можно изменить в `.env` через `PUBLISH_DELAY_HOURS`).
 
-#### 2.3. Запуск отдельных скриптов
-- Скачивание изображений NASA APOD:
-  ```sh
-  python fetch_nasa_apod.py --count 5
-  ```
-- Скачивание изображений NASA EPIC:
-  ```sh
-  python fetch_nasa_epic.py --count 5
-  ```
-- Скачивание изображений SpaceX:
-  ```sh
-  python fetch_spacex_images.py
-  ```
+#### 2.3 Запуск через `main.py`
+```sh
+python main.py --source all --count 5
+```
+Параметры:
+- `--source`: источник (`nasa_apod`, `epic`, `spacex`, `all`).
+- `--count`: количество изображений для загрузки.
 
 ## Описание файлов
 
