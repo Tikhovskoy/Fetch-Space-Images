@@ -7,6 +7,7 @@ import sys
 import telegram
 from PIL import Image
 from image_downloader import download_all_images
+from config import get_config
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -63,9 +64,10 @@ def main():
     """
     Основная функция для запуска публикации изображений.
     """
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-    channel_id = os.getenv("TELEGRAM_CHANNEL_ID")
-    publish_delay = int(os.getenv("PUBLISH_DELAY_HOURS", 4)) * 3600
+    config = get_config()
+    bot_token = config["TELEGRAM_BOT_TOKEN"]
+    channel_id = config["TELEGRAM_CHANNEL_ID"]
+    publish_delay = config["PUBLISH_DELAY_HOURS"] * 3600
 
     if not bot_token or not channel_id:
         logging.error("Не найдены TELEGRAM_BOT_TOKEN или TELEGRAM_CHANNEL_ID")
@@ -74,7 +76,7 @@ def main():
     bot = telegram.Bot(token=bot_token)
 
     parser = argparse.ArgumentParser(description="Публикация изображений в Telegram-канал.")
-    parser.add_argument("--directory", type=str, default=os.getenv("IMAGES_DIR", "images"), help="Папка с изображениями")
+    parser.add_argument("--directory", type=str, default=config["IMAGES_DIR"], help="Папка с изображениями")
     parser.add_argument("--delay", type=int, default=publish_delay, help="Задержка между публикациями в секундах")
     args = parser.parse_args()
 

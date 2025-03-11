@@ -1,6 +1,7 @@
 import requests
 import logging
 from datetime import datetime
+from config import get_config
 import os
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -90,10 +91,8 @@ def main():
     """
     Основная функция для тестирования получения изображений.
     """
-    api_key = os.getenv("NASA_API_KEY")
-    if not api_key:
-        logging.error("API-ключ NASA не найден в переменных окружения.")
-        return
+    config = get_config()
+    api_key = config["NASA_API_KEY"]
 
     images_apod = fetch_nasa_apod_images(api_key, count=5)
     images_epic = fetch_epic_images(api_key, count=5)
