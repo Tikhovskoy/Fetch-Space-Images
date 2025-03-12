@@ -38,13 +38,13 @@ def get_epic_images_data(api_key, count=10):
     Возвращает:
         list: Список словарей с данными изображений.
     """
-    base_url = "https://api.nasa.gov/EPIC/api/natural/images"
+    base_api_url = "https://api.nasa.gov/EPIC/api/natural/images"
     params = {"api_key": api_key}
-    response = requests.get(base_url, params=params, timeout=10)
+    response = requests.get(base_api_url, params=params, timeout=10)
     response.raise_for_status()
     return response.json()[:count]
 
-def build_epic_image_url(image_data, base_url):
+def build_epic_image_url(image_data):
     """
     Строит URL для изображения NASA EPIC на основе переданных данных.
 
@@ -55,12 +55,13 @@ def build_epic_image_url(image_data, base_url):
     Возвращает:
         str: Сформированный URL изображения.
     """
+    base_download_url = "https://epic.gsfc.nasa.gov/archive/natural"
     date_obj = datetime.strptime(image_data["date"], "%Y-%m-%d %H:%M:%S")
     year = date_obj.strftime("%Y")
     month = date_obj.strftime("%m")
     day = date_obj.strftime("%d")
     image_name = image_data["image"]
-    return f"{base_url}/{year}/{month}/{day}/png/{image_name}.png"
+    return f"{base_download_url}/{year}/{month}/{day}/png/{image_name}.png"
 
 def fetch_epic_images(api_key, count=10):
     """
@@ -73,12 +74,11 @@ def fetch_epic_images(api_key, count=10):
     Возвращает:
         list: Список URL изображений.
     """
-    base_url = "https://api.nasa.gov/EPIC/api/natural/images"
     images_data = get_epic_images_data(api_key, count)
     if not images_data:
         logging.warning("NASA EPIC не вернуло изображений.")
         return []
-    return [build_epic_image_url(img, base_url) for img in images_data]
+    return [build_epic_image_url(img) for img in images_data]
 
 def fetch_spacex_images(count=10):
     """
