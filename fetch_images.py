@@ -27,9 +27,44 @@ def fetch_nasa_apod_images(api_key, count=10):
         logging.warning("NASA APOD не вернуло изображений.")
     return images
 
+def get_epic_images_data(api_key, count=10):
+    """
+    Получает данные изображений NASA EPIC из API.
+
+    Аргументы:
+        api_key (str): API-ключ NASA.
+        count (int): Количество изображений для получения.
+
+    Возвращает:
+        list: Список словарей с данными изображений.
+    """
+    base_url = "https://api.nasa.gov/EPIC/api/natural/images"
+    params = {"api_key": api_key}
+    response = requests.get(base_url, params=params, timeout=10)
+    response.raise_for_status()
+    return response.json()[:count]
+
+def build_epic_image_url(image_data, base_url):
+    """
+    Строит URL для изображения NASA EPIC на основе переданных данных.
+
+    Аргументы:
+        image_data (dict): Словарь с данными изображения.
+        base_url (str): Базовый URL для формирования итогового адреса.
+
+    Возвращает:
+        str: Сформированный URL изображения.
+    """
+    date_obj = datetime.strptime(image_data["date"], "%Y-%m-%d %H:%M:%S")
+    year = date_obj.strftime("%Y")
+    month = date_obj.strftime("%m")
+    day = date_obj.strftime("%d")
+    image_name = image_data["image"]
+    return f"{base_url}/{year}/{month}/{day}/png/{image_name}.png"
+
 def fetch_epic_images(api_key, count=10):
     """
-    Получает список изображений NASA EPIC.
+    Получает список URL изображений NASA EPIC.
 
     Аргументы:
         api_key (str): API-ключ NASA.
@@ -38,25 +73,12 @@ def fetch_epic_images(api_key, count=10):
     Возвращает:
         list: Список URL изображений.
     """
-    url = "https://api.nasa.gov/EPIC/api/natural/images"
-    params = {"api_key": api_key}
-    response = requests.get(url, params=params, timeout=10)
-    response.raise_for_status()
-    images_data = response.json()[:count]
+    base_url = "https://api.nasa.gov/EPIC/api/natural/images"
+    images_data = get_epic_images_data(api_key, count)
     if not images_data:
         logging.warning("NASA EPIC не вернуло изображений.")
-
-    epic_urls = []
-    for img in images_data:
-        date_obj = datetime.strptime(img["date"], "%Y-%m-%d %H:%M:%S")
-        year = date_obj.strftime("%Y")
-        month = date_obj.strftime("%m")
-        day = date_obj.strftime("%d")
-        image_name = img["image"]
-        epic_image_url = f"{url}/{year}/{month}/{day}/png/{image_name}.png"
-        epic_urls.append(epic_image_url)
-
-    return epic_urls
+        return []
+    return [build_epic_image_url(img, base_url) for img in images_data]
 
 def fetch_spacex_images(count=10):
     """
