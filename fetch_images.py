@@ -2,7 +2,6 @@ import requests
 import logging
 from datetime import datetime
 from config import get_config
-import os
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
