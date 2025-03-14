@@ -46,9 +46,6 @@ IMAGES_DIR=image
 
 ```sh
 export NASA_API_KEY="your_nasa_api_key"
-export APOD_URL="https://api.nasa.gov/planetary/apod"
-export EPIC_URL="https://api.nasa.gov/EPIC/api/natural/images"
-export SPACEX_URL="https://api.spacexdata.com/v5/launches/past"
 export TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
 export TELEGRAM_CHANNEL_ID="your_channel_id"
 export PUBLISH_DELAY_HOURS=4
